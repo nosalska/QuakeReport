@@ -55,7 +55,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
      */
     private static final int EARTHQUAKE_LOADER_ID = 1;
     private EarthquakeAdapter mAdapter;
-    private static final String USGS_REQUEST_URL = "http://earthquake.usgs.gov/fdsnws/event/1/query";
+    private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,13 +115,28 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         String minMagnitude = sharedPrefs.getString(
                 getString(R.string.settings_min_magnitude_key),
                 getString(R.string.settings_min_magnitude_default));
+
+        String maxMagnitude = sharedPrefs.getString(
+                getString(R.string.settings_max_magnitude_key),
+                getString(R.string.settings_max_magnitude_default));
+
+        String itemNumber = sharedPrefs.getString(
+                getString(R.string.settings_item_number_key),
+                getString(R.string.settings_item_number_default));
+
+        String orderBy = sharedPrefs.getString(
+                getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default)
+        );
+
         Uri baseUri = Uri.parse(USGS_REQUEST_URL);
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
         uriBuilder.appendQueryParameter("format", "geojson");
-        uriBuilder.appendQueryParameter("limit", "10");
+        uriBuilder.appendQueryParameter("limit", itemNumber);
         uriBuilder.appendQueryParameter("minmag", minMagnitude);
-        uriBuilder.appendQueryParameter("orderby", "time");
+        uriBuilder.appendQueryParameter("maxmag", maxMagnitude);
+        uriBuilder.appendQueryParameter("orderby", orderBy);
 
         return new EarthquakeLoader(this, uriBuilder.toString());
     }
